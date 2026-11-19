@@ -1,0 +1,11 @@
+.build/
+dist/
+.swiftpm/
+logo/Setlist.iconset/
+logo/preview.png
+.DS_Store
+# logo exploration drafts (kept locally)
+logo/*.png
+logo/[a-d].svg
+logo/sheet.svg
+logo/round2/
