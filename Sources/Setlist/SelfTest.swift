@@ -110,11 +110,16 @@ enum SelfTest {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) { shoot(1)
             if let pl = state.selected, pl.tracks.count > 2 {
                 state.playTrack(pl.tracks[0].id, inPlaylist: pl.id)
+                if let seek = Double(ProcessInfo.processInfo.environment["SETLIST_SNAPSHOT_SEEK"] ?? "") {
+                    state.seek(to: seek)
+                }
                 state.selectedTrackID = pl.tracks[2].id
             }
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.6) { shoot(2); state.audio.stop(); state.selectPlaylist(state.playlists.last!.id) }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.2) { shoot(3); NSApp.terminate(nil) }
+        // Extra wait lets long files' waveforms finish loading before shot 2.
+        let extra = Double(ProcessInfo.processInfo.environment["SETLIST_SNAPSHOT_DELAY"] ?? "") ?? 0
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.6 + extra) { shoot(2); state.audio.stop(); state.selectPlaylist(state.playlists.last!.id) }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.2 + extra) { shoot(3); NSApp.terminate(nil) }
     }
 
     /// Feature checks: continue modes, fades, lock, keep-awake, waveform, devices.
